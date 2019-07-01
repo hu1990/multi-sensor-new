@@ -6,11 +6,13 @@ iters = total_time/dt;
 
 % Define targets
 target.pos = [0, 200000]';
-target.vel = [5, -7200]';
+target.vel = [5, -4200]';
 target.pos_history = [target.pos];
 
 % Define sensors
 sensor1.pos = [0, 0]';
+sensor1.vel = [0, 3000]';
+sensor1.pos_history = [sensor1.pos];
 sensor1.bias = 10/60/57.3;
 sensor1.std = 1e-5;
 
@@ -18,6 +20,8 @@ sensor1.std = 1e-5;
 % sensor2.pos = [500, 0]';
 % While this cannot.
 sensor2.pos = [5000, 0]';
+sensor2.vel = [0, 3000]';
+sensor2.pos_history = [sensor2.pos];
 sensor2.bias = -15/60/57.3;
 sensor2.std = 1e-5;
 
@@ -54,22 +58,30 @@ otsekf.dim_z = size(otsekf.R, 1);
 % Start simulation
 for iter = 1:iters
     % Target motion
-    target = target_motion(target, dt);
-
+    target = cv_motion(target, dt);
+    
+    % Sensor motion
+    sensor1 = cv_motion(sensor1, dt);
+    sensor2 = cv_motion(sensor2, dt);
+    
     % Generate measurement
     obs = [bearing_measure(sensor1, target);
     	bearing_measure(sensor2, target)];
 
     % Filter
-    otsekf = ekf_predict_update(otsekf, dt, obs, sensor2.pos);
+    args.sensor1_pos = sensor1.pos;
+    args.sensor2_pos = sensor2.pos;
+    otsekf = ekf_predict_update(otsekf, dt, obs, args);
 end
 
 % Generate data
 time = 0:dt:dt*iters;
 
+% Plot
+% Target trajectory
 figure
 plot(time, target.pos_history(2,:));
-% Plot
+
 figure;
 hold on
 plot([time(1), time(end)], [sensor1.bias, sensor1.bias]);
@@ -88,21 +100,27 @@ end
 function f = fx(x, dt)
     f = F(x, dt) * x;
 end
-function h = two_bearing_sensor2d_hx(x, sensor2_pos)
-    x1 = x(1:2:3);
-    x2 = x1 - sensor2_pos;
+function h = two_bearing_sensor2d_hx(x, args)
+    sensor1_pos = args.sensor1_pos;
+    sensor2_pos = args.sensor2_pos;
+    target_pos = x(1:2:3);
+    x1 = target_pos - sensor1_pos;
+    x2 = target_pos - sensor2_pos;
     h = [atan2(x1(1), x1(2)) + x(5);
         atan2(x2(1), x2(2)) + x(6)];
 end
-function H = two_bearing_sensor2d_H(x, sensor2_pos)
-    x1 = x(1:2:3);
-    mag = norm(x1)^2;
-    x2 = x1 - sensor2_pos;
+function H = two_bearing_sensor2d_H(x, args)
+    sensor1_pos = args.sensor1_pos;
+    sensor2_pos = args.sensor2_pos;
+    target_pos = x(1:2:3);
+    x1 = target_pos - sensor1_pos;
+    mag1 = norm(x1)^2;
+    x2 = target_pos - sensor2_pos;
     mag2 = norm(x2)^2;
-    H = [x1(2)/mag 0 -x1(1)/mag 0 1 0;
+    H = [x1(2)/mag1 0 -x1(1)/mag1 0 1 0;
         x2(2)/mag2 0 -x2(1)/mag2 0 0 1];
 end
-function target = target_motion(target, dt)
+function target = cv_motion(target, dt)
     target.pos = target.pos + dt * target.vel;
     target.pos_history = [target.pos_history target.pos];
 end
