@@ -1,6 +1,6 @@
 rng(0);
 % Simulation setting
-dt = 0.01;
+dt = 1;
 total_time = 20;
 iters = total_time/dt;
 
