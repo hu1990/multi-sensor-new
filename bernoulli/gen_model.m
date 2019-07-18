@@ -29,7 +29,7 @@ model.P_birth{1}(:,:,1)= model.B_birth{1}(:,:,1)*model.B_birth{1}(:,:,1)';      
 
 % observation model parameters (noisy r/theta only)
 % measurement transformation given by gen_observation_fn, observation matrix is N/A in non-linear case
-model.D= diag([ 2*(pi/180); 10 ]);      %std for angle and range noise
+model.D= diag([ 2*(pi/180); 2*pi/180 ]);      %std for angle and range noise
 model.R= model.D*model.D';              %covariance for observation noise
 
 % detection parameters
@@ -38,7 +38,7 @@ model.Q_D= 1-model.P_D; %probability of missed detection in measurements
 
 % clutter parameters
 model.lambda_c= 20;                             %poisson average rate of uniform clutter (per scan)
-model.range_c= [ -pi/2 pi/2; 0 2000 ];          %uniform clutter on r/theta
+model.range_c= [ -pi/2 pi/2; -pi/2 pi/2 ];          %uniform clutter on r/theta
 model.pdf_c= 1/prod(model.range_c(:,2)-model.range_c(:,1)); %uniform clutter density
 
 

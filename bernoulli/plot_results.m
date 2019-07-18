@@ -19,11 +19,11 @@ figure; tracking= gcf; hold on;
 %plot x measurement
 subplot(211); box on; 
 
-for k=1:meas.K
-    if ~isempty(meas.Z{k})
-        hlined= line(k*ones(size(meas.Z{k},2),1),meas.Z{k}(2,:).*sin(meas.Z{k}(1,:)),'LineStyle','none','Marker','x','Markersize',5,'Color',0.7*ones(1,3));
-    end   
-end
+% for k=1:meas.K
+%     if ~isempty(meas.Z{k})
+%         hlined= line(k*ones(size(meas.Z{k},2),1),meas.Z{k}(2,:).*sin(meas.Z{k}(1,:)),'LineStyle','none','Marker','x','Markersize',5,'Color',0.7*ones(1,3));
+%     end   
+% end
 
 for i=1:truth.total_tracks
     Px= X_track(:,k_birth(i):1:k_death(i),i); Px=Px([1 3],:);
@@ -41,11 +41,11 @@ end
 %plot y measurement
 subplot(212); box on;
     
-for k=1:meas.K
-    if ~isempty(meas.Z{k})
-        yhlined= line(k*ones(size(meas.Z{k},2),1),meas.Z{k}(2,:).*cos(meas.Z{k}(1,:)),'LineStyle','none','Marker','x','Markersize',5,'Color',0.7*ones(1,3));
-    end
-end
+% for k=1:meas.K
+%     if ~isempty(meas.Z{k})
+%         yhlined= line(k*ones(size(meas.Z{k},2),1),meas.Z{k}(2,:).*cos(meas.Z{k}(1,:)),'LineStyle','none','Marker','x','Markersize',5,'Color',0.7*ones(1,3));
+%     end
+% end
 
 %plot y track
 for i=1:truth.total_tracks
@@ -62,11 +62,11 @@ for k=1:meas.K
 end
 
 subplot(211); xlabel('Time'); ylabel('x-coordinate (m)');
-set(gca, 'XLim',[1 truth.K]); set(gca, 'YLim',[-model.range_c(2,2) model.range_c(2,2)]);
-legend([hline2 hline1 hlined],'Estimates          ','True tracks','Measurements');
+% set(gca, 'XLim',[1 truth.K]); set(gca, 'YLim',[-model.range_c(2,2) model.range_c(2,2)]);
+% legend([hline2 hline1 hlined],'Estimates          ','True tracks','Measurements');
 
 subplot(212); xlabel('Time'); ylabel('y-coordinate (m)');
-set(gca, 'XLim',[1 truth.K]); set(gca, 'YLim',[ model.range_c(1,2) model.range_c(2,2)] );
+% set(gca, 'XLim',[1 truth.K]); set(gca, 'YLim',[ model.range_c(1,2) model.range_c(2,2)] );
 %legend([yhline2 yhline1 yhlined],'Estimates          ','True tracks','Measurements');
 
 %plot error
