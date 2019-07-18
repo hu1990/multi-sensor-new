@@ -1,4 +1,5 @@
 function Z= gen_observation_fn(model,X,W, sensor_pos)
+% X: array(state, target)
 
 if ~isnumeric(W)
     if strcmp(W,'noise')

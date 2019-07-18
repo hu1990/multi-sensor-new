@@ -74,37 +74,39 @@ for k=1:meas.K
     r_predict= limit_range(r_predict);                                                              %limit range of 0<r<1 for numerical stability
     L_predict= model.L_birth+L_update;                                                              %number of predicted components
     
-    %---gating
-    if filter.gate_flag
-        meas.Z{k}= gate_meas_ekf(meas.Z{k},filter.gamma,model,m_predict,P_predict, meas.sensor_pos);     
-    end
-        
-    %---update
-    %number of measurements
-    m= size(meas.Z{k},2);
-    
-    %missed detection term - scale to get original expression with factor exp(-model.lambda_c)*(model.lambda_c)^(m-1)*(model.pdf_c)^(m-1)
-    w_update = model.Q_D*w_predict*(model.lambda_c)*(model.pdf_c);
-    m_update = m_predict;
-    P_update = P_predict;
-    
-    if m~=0
-        %m detection terms - scale to get original expression with factor exp(-model.lambda_c)*(model.lambda_c)^(m-1)*(model.pdf_c)^(m-1)
-        [qz_temp,m_temp,P_temp] = ekf_update_multiple(meas.Z{k},model,m_predict,P_predict, meas.sensor_pos);
-        for ell=1:m
-            w_temp = model.P_D*w_predict(:).*qz_temp(:,ell);
-            w_update = cat(1,w_update,w_temp);
-            m_update = cat(2,m_update,m_temp(:,:,ell));
-            P_update = cat(3,P_update,P_temp);
-        end
-    end
-            
-    %existence probability
-    r_update= (r_predict*sum(w_update))/( (model.lambda_c*model.pdf_c)*(1-r_predict) + r_predict*sum(w_update) );
-    r_update= limit_range(r_update); 
-
-    %normalize weights
-    w_update = w_update/sum(w_update);        
+	for s = 1:meas.S
+	    %---gating
+	    if filter.gate_flag
+	        meas.Z{k, s}= gate_meas_ekf(meas.Z{k, s},filter.gamma,model,m_predict,P_predict, meas.sensor_pos);     
+	    end
+	        
+	    %---update
+	    %number of measurements
+	    m= size(meas.Z{k, s},2);
+	    
+	    %missed detection term - scale to get original expression with factor exp(-model.lambda_c)*(model.lambda_c)^(m-1)*(model.pdf_c)^(m-1)
+	    w_update = model.Q_D*w_predict*(model.lambda_c)*(model.pdf_c);
+	    m_update = m_predict;
+	    P_update = P_predict;
+	    
+	    if m~=0
+	        %m detection terms - scale to get original expression with factor exp(-model.lambda_c)*(model.lambda_c)^(m-1)*(model.pdf_c)^(m-1)
+	        [qz_temp,m_temp,P_temp] = ekf_update_multiple(meas.Z{k, s},model,m_predict,P_predict, meas.sensor_pos);
+	        for ell=1:m
+	            w_temp = model.P_D*w_predict(:).*qz_temp(:,ell);
+	            w_update = cat(1,w_update,w_temp);
+	            m_update = cat(2,m_update,m_temp(:,:,ell));
+	            P_update = cat(3,P_update,P_temp);
+	        end
+	    end
+	            
+	    %existence probability
+	    r_update= (r_predict*sum(w_update))/( (model.lambda_c*model.pdf_c)*(1-r_predict) + r_predict*sum(w_update) );
+	    r_update= limit_range(r_update); 
+	
+	    %normalize weights
+	    w_update = w_update/sum(w_update);        
+	end
             
     %---mixture management
     L_posterior= length(w_update);
