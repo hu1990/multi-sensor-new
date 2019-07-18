@@ -19,4 +19,5 @@ function ekf = ekf_predict_update(ekf, dt, z, args)
     ekf.x = x;
     ekf.P = P;
 
+    ekf.result.x = [ekf.result.x x(1:4)];
     ekf.result.b = [ekf.result.b x(5:6)];
