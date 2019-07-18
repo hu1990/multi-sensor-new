@@ -29,6 +29,7 @@
 % pages={3406-3430}}
 %---
 
+rng(0);
 tic
 model= gen_model;
 truth= gen_truth(model);

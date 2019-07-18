@@ -1,4 +1,4 @@
-function [qz_update,m_update,P_update] = ekf_update_multiple(z,model,m,P)
+function [qz_update,m_update,P_update] = ekf_update_multiple(z,model,m,P, sensor_pos)
 
 plength= size(m,2);
 zlength= size(z,2);
@@ -8,17 +8,17 @@ m_update = zeros(model.x_dim,plength,zlength);
 P_update = zeros(model.x_dim,model.x_dim,plength);
 
 for idxp=1:plength
-        [qz_temp,m_temp,P_temp] = ekf_update_single(z,model,m(:,idxp),P(:,:,idxp));
+        [qz_temp,m_temp,P_temp] = ekf_update_single(z,model,m(:,idxp),P(:,:,idxp), sensor_pos);
        qz_update(idxp,:)   = qz_temp;
         m_update(:,idxp,:) = m_temp;
         P_update(:,:,idxp) = P_temp;
 end
 
-function [qz_temp,m_temp,P_temp] = ekf_update_single(z,model,m,P)
+function [qz_temp,m_temp,P_temp] = ekf_update_single(z,model,m,P, sensor_pos)
 
-eta = gen_observation_fn(model,m,'noiseless');
+eta = gen_observation_fn(model,m,'noiseless', sensor_pos);
 
-[H_ekf,U_ekf]= ekf_update_mat(model,m);                 % user specified function for application
+[H_ekf,U_ekf]= model.H(m, sensor_pos);                 % user specified function for application
 S= U_ekf*model.R*U_ekf'+H_ekf*P*H_ekf'; S= (S+ S')/2;   % addition step to avoid numerical problem
 Vs= chol(S); det_S= prod(diag(Vs))^2; inv_sqrt_S= inv(Vs); iS= inv_sqrt_S*inv_sqrt_S';
 

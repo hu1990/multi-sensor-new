@@ -76,7 +76,7 @@ for k=1:meas.K
     
     %---gating
     if filter.gate_flag
-        meas.Z{k}= gate_meas_ekf(meas.Z{k},filter.gamma,model,m_predict,P_predict);     
+        meas.Z{k}= gate_meas_ekf(meas.Z{k},filter.gamma,model,m_predict,P_predict, meas.sensor_pos);     
     end
         
     %---update
@@ -90,7 +90,7 @@ for k=1:meas.K
     
     if m~=0
         %m detection terms - scale to get original expression with factor exp(-model.lambda_c)*(model.lambda_c)^(m-1)*(model.pdf_c)^(m-1)
-        [qz_temp,m_temp,P_temp] = ekf_update_multiple(meas.Z{k},model,m_predict,P_predict);
+        [qz_temp,m_temp,P_temp] = ekf_update_multiple(meas.Z{k},model,m_predict,P_predict, meas.sensor_pos);
         for ell=1:m
             w_temp = model.P_D*w_predict(:).*qz_temp(:,ell);
             w_update = cat(1,w_update,w_temp);
