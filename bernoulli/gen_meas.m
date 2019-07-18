@@ -3,9 +3,9 @@ function meas= gen_meas(model,truth)
 %variables
 meas.K= truth.K;
 % no. of sensors
-meas.S = 1;
+meas.S = 2;
 meas.Z= cell(truth.K, meas.S);
-meas.sensor_pos = [0 0 1000 0]';
+meas.sensor_pos = [0 0; 1000 0]';
 
 %generate measurements
 for s = 1:meas.S
@@ -14,7 +14,7 @@ for s = 1:meas.S
 	        %detected target indices
 			idx= find( rand(truth.N(k),1) <= model.P_D );                                            
 	        %single target observations if detected
-			meas.Z{k, s}= gen_observation_fn(model,truth.X{k}(:,idx),'noise', meas.sensor_pos);                           
+			meas.Z{k, s}= gen_observation_fn(model,truth.X{k}(:,idx),'noise', meas.sensor_pos(:,s));                           
 	    end
 	    %number of clutter points
 		N_c= poissrnd(model.lambda_c);                                                               

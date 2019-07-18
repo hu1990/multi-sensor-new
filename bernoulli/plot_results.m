@@ -4,14 +4,14 @@ function handles= plot_results(model,truth,meas,est)
 
 
 %plot ground truths
-figure; truths= gcf; hold on;
-for i=1:truth.total_tracks
-    Zt= gen_observation_fn( model, X_track(:,k_birth(i):1:k_death(i),i),'noiseless');
-    polar( -Zt(1,:)+pi/2, Zt(2,:),'k-'  );
-    polar( -Zt(1,1)+pi/2, Zt(2,1), 'ko');
-    polar( -Zt(1,k_death(i)-k_birth(i)+1)+pi/2, Zt(2,k_death(i)-k_birth(i)+1),'k^');
-end
-axis equal; axis([-model.range_c(2,2) model.range_c(2,2) 0 model.range_c(2,2)]); title('Ground Truths');
+% figure; truths= gcf; hold on;
+% for i=1:truth.total_tracks
+%     Zt= gen_observation_fn( model, X_track(:,k_birth(i):1:k_death(i),i),'noiseless');
+%     polar( -Zt(1,:)+pi/2, Zt(2,:),'k-'  );
+%     polar( -Zt(1,1)+pi/2, Zt(2,1), 'ko');
+%     polar( -Zt(1,k_death(i)-k_birth(i)+1)+pi/2, Zt(2,k_death(i)-k_birth(i)+1),'k^');
+% end
+% axis equal; axis([-model.range_c(2,2) model.range_c(2,2) 0 model.range_c(2,2)]); title('Ground Truths');
 
 %plot x tracks and measurements in x/y
 figure; tracking= gcf; hold on;
@@ -95,7 +95,7 @@ set(gca, 'XLim',[1 meas.K]); set(gca, 'YLim',[0 max(truth.N)+1]);
 xlabel('Time'); ylabel('Cardinality');
 
 %return
-handles=[ truths tracking ospa cardinality ];
+% handles=[ truths tracking ospa cardinality ];
 
 
 function [X_track,k_birth,k_death]= extract_tracks(X,track_list,total_tracks)
