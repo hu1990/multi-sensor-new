@@ -1,11 +1,8 @@
-function meas= gen_meas(model,truth)
+function meas= gen_meas(model,truth, meas)
 
 %variables
 meas.K= truth.K;
-% no. of sensors
-meas.S = 2;
 meas.Z= cell(truth.K, meas.S);
-meas.sensor_pos = [0 0; 1000 0]';
 
 %generate measurements
 for s = 1:meas.S

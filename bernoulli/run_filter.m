@@ -1,5 +1,8 @@
-function est = run_filter(model,meas)
+function est = run_filter(model,meas, est)
 
+% Sequential process feature is added.
+% If `meas.S` is 1, it is as same as the original Bernoulli filter.
+%
 % This is the MATLAB code for the Bernoulli filter with RFS observations proposed in
 % (for a single sensor only)
 % B.-T. Vo, C.M. See, N. Ma and W.T. Ng, "Multi-Sensor Joint Detection and Tracking with the Bernoulli Filter," IEEE Trans. Aerospace and Electronic Systems, Vol. 48, No. 2, pp. 1385 - 1402, 2012.
@@ -56,7 +59,8 @@ est.filter= filter;
 %initial prior
 r_update= 0.001;
 w_update(1)= 1;
-[m_update(:,1), P_update(:,:,1)] = filter_init();
+m_update(:,1) = est.m;
+P_update(:,:,1) = est.P;
 L_update = 1;
 
 %recursive filtering
