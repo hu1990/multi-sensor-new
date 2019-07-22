@@ -11,7 +11,7 @@ for s = 1:meas.S
 	        %detected target indices
 			idx= find( rand(truth.N(k),1) <= model.P_D );                                            
 	        %single target observations if detected
-			meas.Z{k, s}= gen_observation_fn(model,truth.X{k}(:,idx),'noise', meas.sensor_pos(:,s));                           
+			meas.Z{k, s}= gen_observation_fn(model,truth.X{k}(:,idx),'noise', model.hx{s}, meas.sensor_pos(:,s));                           
 	    end
 	    %number of clutter points
 		N_c= poissrnd(model.lambda_c);                                                               

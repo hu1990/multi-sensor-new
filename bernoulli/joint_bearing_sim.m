@@ -39,8 +39,8 @@ model.P_birth{1}(:,:,1)= model.B_birth{1}(:,:,1)*model.B_birth{1}(:,:,1)';      
 
 % --- observation model parameters (noisy joint bearing) ---
 % measurement transformation 
-model.hx = @joint_bearing_hx;
-model.H = @joint_bearing_H;
+model.hx{1} = @joint_bearing_hx;
+model.H{1} = @joint_bearing_H;
 model.D= diag([ 2*(pi/180), 2*(pi/180)]);      %std for angle and range noise
 model.R= model.D*model.D';              %covariance for observation noise
 

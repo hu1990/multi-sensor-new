@@ -81,7 +81,7 @@ for k=1:meas.K
 for s = 1:meas.S
     %---gating
     if filter.gate_flag
-        meas.Z{k, s}= gate_meas_ekf(meas.Z{k, s},filter.gamma,model,m_predict,P_predict, meas.sensor_pos(:,s));     
+        meas.Z{k, s}= gate_meas_ekf(meas.Z{k, s},filter.gamma,model,m_predict,P_predict, model.hx{s}, model.H{s}, meas.sensor_pos(:,s));     
     end
         
     %---update
@@ -95,7 +95,7 @@ for s = 1:meas.S
     
     if m~=0
         %m detection terms - scale to get original expression with factor exp(-model.lambda_c)*(model.lambda_c)^(m-1)*(model.pdf_c)^(m-1)
-        [qz_temp,m_temp,P_temp] = ekf_update_multiple(meas.Z{k, s},model,m_predict,P_predict, meas.sensor_pos(:,s));
+        [qz_temp,m_temp,P_temp] = ekf_update_multiple(meas.Z{k, s},model,m_predict,P_predict, model.hx{s}, model.H{s}, meas.sensor_pos(:,s));
         for ell=1:m
             w_temp = model.P_D*w_predict(:).*qz_temp(:,ell);
             w_update = cat(1,w_update,w_temp);
