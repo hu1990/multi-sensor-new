@@ -1,4 +1,4 @@
-function Z= gen_observation_fn(model,X,W, sensor_pos)
+function Z= gen_observation_fn(model,X,W, hx, sensor_pos)
 % X: array(state, target)
 
 if ~isnumeric(W)
@@ -12,5 +12,5 @@ end
 if isempty(X)
     Z= [];
 else %modify below here for user specified measurement model
-	Z = model.hx(X, sensor_pos) + W;
+	Z = hx(X, sensor_pos) + W;
 end

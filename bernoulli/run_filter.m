@@ -1,5 +1,8 @@
-function est = run_filter(model,meas)
+function est = run_filter(model,meas, est)
 
+% Sequential process feature is added.
+% If `meas.S` is 1, it is as same as the original Bernoulli filter.
+%
 % This is the MATLAB code for the Bernoulli filter with RFS observations proposed in
 % (for a single sensor only)
 % B.-T. Vo, C.M. See, N. Ma and W.T. Ng, "Multi-Sensor Joint Detection and Tracking with the Bernoulli Filter," IEEE Trans. Aerospace and Electronic Systems, Vol. 48, No. 2, pp. 1385 - 1402, 2012.
@@ -56,7 +59,8 @@ est.filter= filter;
 %initial prior
 r_update= 0.001;
 w_update(1)= 1;
-[m_update(:,1), P_update(:,:,1)] = filter_init();
+m_update(:,1) = est.m;
+P_update(:,:,1) = est.P;
 L_update = 1;
 
 %recursive filtering
@@ -77,7 +81,7 @@ for k=1:meas.K
 for s = 1:meas.S
     %---gating
     if filter.gate_flag
-        meas.Z{k, s}= gate_meas_ekf(meas.Z{k, s},filter.gamma,model,m_predict,P_predict, meas.sensor_pos(:,s));     
+        meas.Z{k, s}= gate_meas_ekf(meas.Z{k, s},filter.gamma,model,m_predict,P_predict, model.hx{s}, model.H{s}, meas.sensor_pos(:,s));     
     end
         
     %---update
@@ -91,7 +95,7 @@ for s = 1:meas.S
     
     if m~=0
         %m detection terms - scale to get original expression with factor exp(-model.lambda_c)*(model.lambda_c)^(m-1)*(model.pdf_c)^(m-1)
-        [qz_temp,m_temp,P_temp] = ekf_update_multiple(meas.Z{k, s},model,m_predict,P_predict, meas.sensor_pos(:,s));
+        [qz_temp,m_temp,P_temp] = ekf_update_multiple(meas.Z{k, s},model,m_predict,P_predict, model.hx{s}, model.H{s}, meas.sensor_pos(:,s));
         for ell=1:m
             w_temp = model.P_D*w_predict(:).*qz_temp(:,ell);
             w_update = cat(1,w_update,w_temp);

@@ -1,4 +1,4 @@
-function truth= gen_truth(model)
+function truth= gen_truth(model, xstart, tbirth, tdeath)
 
 %variables
 truth.K= 100;                   %length of data/number of scans
@@ -11,7 +11,6 @@ truth.total_tracks= 0;          %total number of appearing tracks
 %target initial states and birth/death times
 nbirths= 1;
 
-[xstart, tbirth, tdeath] = truth_init();
 
 %generate the tracks
 for targetnum=1:nbirths

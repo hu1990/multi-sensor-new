@@ -13,6 +13,34 @@ function handles= plot_results(model,truth,meas,est)
 % end
 % axis equal; axis([-model.range_c(2,2) model.range_c(2,2) 0 model.range_c(2,2)]); title('Ground Truths');
 
+% Extract estimate
+for k=1:meas.K
+    if ~isempty(est.X{k})
+        P= est.X{k};
+    end
+end
+
+% Plot b1 estimate
+figure;
+hold on; box on;
+for k=1:meas.K
+    if ~isempty(est.X{k})
+subplot(211);
+        hline2= line(k*ones(size(est.X{k},2),1),P(5,:),'LineStyle','none','Marker','.','Markersize',8,'Color',0*ones(1,3));
+end
+end
+ylim([-0.03 0.03]);
+
+% Plot b2 estimate
+hold on; box on;
+for k=1:meas.K
+    if ~isempty(est.X{k})
+subplot(212);
+        hline2= line(k*ones(size(est.X{k},2),1),P(6,:),'LineStyle','none','Marker','.','Markersize',8,'Color',0*ones(1,3));
+end
+end
+ylim([-0.03 0.03]);
+
 %plot x tracks and measurements in x/y
 figure; tracking= gcf; hold on;
 
