@@ -9,7 +9,7 @@ The sensors are moving in a constant speed, too, while:
 - in Simulation 1, Sensor 2 moves as same as Sensor 1;
 - in Simulation 2, Sensor 2 decides an optimal heading angle.
 
-Filter method used is EKF actually.
+Filter method used is OTSEKF.
 
 Simulation results are plotted.
 
@@ -19,7 +19,7 @@ A realtime script showing how to solve the optimal heading angle.
 
 `ekf_predict_update.m`:
 
-An implement of EKF.
+An implementation of EKF.
 
 `test_asekf.m`:
 
@@ -36,7 +36,7 @@ Filter model:
 
 `otsekf_predict_update.m`:
 
-An implement of OTSEKF (optimal two stage extended Kalman filter).
+An implementation of OTSEKF (optimal two stage extended Kalman filter).
 *There exists a linearization approximation.*
 
 `test_otsekf.m`:

@@ -59,6 +59,7 @@ function otsekf = otsekf_predict_update(otsekf, dt, z, args)
     otsekf.Pb = P2;
     otsekf.V = V;
     % Save the result
+	otsekf.result.x = [otsekf.result.x x];
     otsekf.result.b = [otsekf.result.b b];
 end
    

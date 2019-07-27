@@ -27,21 +27,22 @@ sensor2.bias = -15/60/57.3;
 sensor2.std = 1e-5;
 
 % Define filter
-otsekf.x = [199000, 0, -6000, 0, 0, 0]';
-otsekf.P = diag([1e3, 10, 1200, 10, 1e-2, 1e-2])^2;
+otsekf.x = [199000, 0, -6000, 0]';
+otsekf.P = diag([1e3, 10, 1200, 10])^2;
+
+otsekf.b = [0, 0]';
+otsekf.Pb = diag([1e-2, 1e-2])^2;
 
 otsekf.f = @fx;
 
 otsekf.F = @F;
 
 q = 1e-5;
-Qx = [dt^3/3 0 dt^2/2 0;
+otsekf.Qx = [dt^3/3 0 dt^2/2 0;
 	dt^2/2 0 dt 0;
 	0 dt^3/3 0 dt^2/2;
 	0 dt^2/2 0 dt]*q;
-Qb = diag([1e-6, 1e-6])^2;
-otsekf.Q = [Qx zeros(4,2);
-    zeros(2,4) Qb];
+otsekf.Qb = diag([1e-6, 1e-6])^2;
 
 otsekf.h = @two_bearing_sensor2d_hx;
 
@@ -49,12 +50,21 @@ otsekf.H = @two_bearing_sensor2d_H;
 
 otsekf.R = diag([1e-5, 1e-5])^2;
 
-otsekf.result.x = [otsekf.x(1:4)];
-otsekf.result.b = [otsekf.x(5:6)];
+otsekf.result.x = [otsekf.x];
+otsekf.result.b = [otsekf.b];
 
 % helper attributes
 otsekf.dim_x = size(otsekf.x, 1);
-otsekf.dim_z = size(otsekf.R, 1);
+otsekf.dim_z = size(otsekf.b, 1);
+
+otsekf.V = zeros(otsekf.dim_x, otsekf.dim_z);
+
+otsekf.xx = otsekf.x;
+otsekf.Px = otsekf.P;
+
+otsekf.B = zeros(otsekf.dim_x, otsekf.dim_z);
+otsekf.C = eye(otsekf.dim_z);
+otsekf.D = eye(otsekf.dim_z);
 
 % Start simulation
 for iter = 1:iters
@@ -75,7 +85,7 @@ for iter = 1:iters
     % Filter
     args.sensor1_pos = sensor1.pos;
     args.sensor2_pos = sensor2.pos;
-    otsekf = ekf_predict_update(otsekf, dt, obs, args);
+    otsekf = otsekf_predict_update(otsekf, dt, obs, args);
 end
 
 % Generate data
@@ -99,7 +109,7 @@ sim_data.target_vel = target.vel;
 end
 
 function f = F(x, dt)
-    f = eye(6);
+    f = eye(4);
     f(1,3) = dt;
     f(2,4) = dt;
 end
@@ -112,8 +122,8 @@ function h = two_bearing_sensor2d_hx(x, args)
     target_pos = x(1:2);
     x1 = target_pos - sensor1_pos;
     x2 = target_pos - sensor2_pos;
-    h = [atan2(x1(2), x1(1)) + x(5);
-        atan2(x2(2), x2(1)) + x(6)];
+    h = [atan2(x1(2), x1(1));
+        atan2(x2(2), x2(1))];
 end
 function H = two_bearing_sensor2d_H(x, args)
     sensor1_pos = args.sensor1_pos;
@@ -123,8 +133,8 @@ function H = two_bearing_sensor2d_H(x, args)
     mag1 = norm(x1)^2;
     x2 = target_pos - sensor2_pos;
     mag2 = norm(x2)^2;
-    H = [-x1(2)/mag1 x1(1)/mag1 0 0 1 0;
-        -x2(2)/mag2 x2(1)/mag2 0 0 0 1];
+    H = [-x1(2)/mag1 x1(1)/mag1 0 0;
+        -x2(2)/mag2 x2(1)/mag2 0 0];
 end
 function target = cv_motion(target, dt)
     target.pos = target.pos + dt * target.vel;
