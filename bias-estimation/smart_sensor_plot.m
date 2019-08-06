@@ -13,7 +13,7 @@ plot(sim_data1.target_pos(1,:)/1000, sim_data1.target_pos(2,:)/1000, 'kx-', 'Mar
 plot(sim_data1.sensor1_pos(1,:)/1000, sim_data1.sensor1_pos(2,:)/1000, 'k.-');
 plot(sim_data1.sensor2_pos(1,:)/1000, sim_data1.sensor2_pos(2,:)/1000, 'k:');
 plot(sim_data2.sensor2_pos(1,:)/1000, sim_data2.sensor2_pos(2,:)/1000, 'k-');
-legend('ç›®æ ‡', 'ä¼ æ„Ÿå™¨1', 'ä¼ æ„Ÿå™¨2æƒ…å½¢1', 'ä¼ æ„Ÿå™¨2æƒ…å½¢2', 'Location', 'Southeast');
+legend('Ä¿±ê', '´«¸ÐÆ÷1', '´«¸ÐÆ÷2ÇéÐÎ1', '´«¸ÐÆ÷2ÇéÐÎ2', 'Location', 'Southeast');
 xlabel('x/km');
 ylabel('y/km');
 ylim([-100 50]);
@@ -44,9 +44,9 @@ hold on;
 plot(sim_data1.time, (sim_data1.sensor1_bias - sim_data1.b(1,:))*57.3, 'k:');
 plot(sim_data2.time, (sim_data2.sensor1_bias - sim_data2.b(1,:))*57.3, 'k-');
 % plot([sim_data1.time(1), sim_data1.time(end)], [0 0], 'k--');
-legend('æƒ…å½¢1', 'æƒ…å½¢2');
-xlabel('æ—¶é—´/s');
-ylabel('b_1ä¼°è®¡è¯¯å·®/\circ', 'Position', [-2.8 0.05]);
+legend('ÇéÐÎ1', 'ÇéÐÎ2');
+xlabel('Ê±¼ä/s');
+ylabel('b_1¹À¼ÆÎó²î/\circ', 'Position', [-2.8 0.05]);
 ylim([-0.05 0.15]);
 yticks(-0.05:0.05:0.15);
 print([path, 'b1_error.tif'], '-dtiff', '-r600');
@@ -61,9 +61,9 @@ hold on;
 plot(sim_data1.time, (sim_data1.sensor2_bias - sim_data1.b(2,:))*57.3,'k:');
 plot(sim_data2.time, (sim_data2.sensor2_bias - sim_data2.b(2,:))*57.3,'k-');
 % plot([sim_data1.time(1), sim_data1.time(end)], [0 0], 'k--');
-legend('æƒ…å½¢1', 'æƒ…å½¢2', 'Location', 'SouthEast');
-xlabel('æ—¶é—´/s');
-ylabel('b_2ä¼°è®¡è¯¯å·®/\circ', 'Position', [-2.8 -0.05]);
+legend('ÇéÐÎ1', 'ÇéÐÎ2', 'Location', 'SouthEast');
+xlabel('Ê±¼ä/s');
+ylabel('b_2¹À¼ÆÎó²î/\circ', 'Position', [-2.8 -0.05]);
 ylim([-0.2 0.1]);
 print([path, 'b2_error.tif'], '-dtiff', '-r600');
 
@@ -81,7 +81,7 @@ print([path, 'b2_error.tif'], '-dtiff', '-r600');
 % legend('True', 'Estimation in Case 1', 'Estimation in Case 2');
 
 % State estimation error in both cases. (Target position)
-% x position estimate error
+% Fig. 5: x position estimate error
 f = figure;
 f.Position = [100 100 260 120];
 a = gca;
@@ -91,13 +91,13 @@ hold on;
 plot(sim_data1.time, (sim_data1.target_pos(1,:) - sim_data1.x(1,:))/1000, 'k:');
 plot(sim_data2.time, (sim_data2.target_pos(1,:) - sim_data2.x(1,:))/1000, 'k-');
 % plot([sim_data1.time(1), sim_data1.time(end)], [0 0], 'k--');
-legend('æƒ…å½¢1', 'æƒ…å½¢2');
-xlabel('æ—¶é—´/s');
-ylabel('xä¼°è®¡è¯¯å·®/km', 'Position', [-1.3268 1.2]);
-ylim([-0.3 3]);
+legend('ÇéÐÎ1', 'ÇéÐÎ2');
+xlabel('Ê±¼ä/s');
+ylabel('x¹À¼ÆÎó²î/km', 'Position', [-1.3268 1]);
+ylim([-1 3]);
 print([path, 'x_error.tif'], '-dtiff', '-r600');
 
-% y estimate error
+% Fig.6: y estimate error
 f = figure;
 f.Position = [100 100 260 120];
 box on;
@@ -107,9 +107,11 @@ a.Position = [0.14,0.26,0.78,0.67];
 plot(sim_data1.time, sim_data1.target_pos(2,:) - sim_data1.x(2,:), 'k:');
 plot(sim_data2.time, sim_data2.target_pos(2,:) - sim_data2.x(2,:), 'k-');
 % plot([sim_data1.time(1), sim_data1.time(end)], [0 0], 'k--');
-legend('æƒ…å½¢1', 'æƒ…å½¢2', 'Location', 'SouthEast');
-xlabel('æ—¶é—´/s');
-ylabel('yä¼°è®¡è¯¯å·®/m', 'Position', [-1.3268 0]);
+legend('ÇéÐÎ1', 'ÇéÐÎ2', 'Location', 'SouthEast');
+xlabel('Ê±¼ä/s');
+ylabel('y¹À¼ÆÎó²î/m', 'Position', [-1.3268 0]);
+ylim([-11 11]);
+yticks([-11 11]);
 print([path, 'y_error.tif'], '-dtiff', '-r600');
 
 % State estimation in both cases. (Target velocity)
@@ -126,7 +128,7 @@ print([path, 'y_error.tif'], '-dtiff', '-r600');
 % legend('True', 'Estimation in Case 1', 'Estimation in Case 2');
 
 % State estimation error in both cases. (Target velocity)
-% v_x estimate error
+% Fig. 7: v_x estimate error
 f = figure;
 f.Position = [100 100 260 120];
 box on;
@@ -136,9 +138,10 @@ a.Position = [0.14,0.26,0.78,0.67];
 plot(sim_data1.time, (sim_data1.target_vel(1) - sim_data1.x(3,:))/1000, 'k:');
 plot(sim_data2.time, (sim_data2.target_vel(1) - sim_data2.x(3,:))/1000, 'k-');
 % plot([sim_data1.time(1), sim_data1.time(end)], [0 0], 'k--');
-legend('æƒ…å½¢1', 'æƒ…å½¢2');
-xlabel('æ—¶é—´/s');
-ylabel('v_xä¼°è®¡è¯¯å·®/(km/s)', 'Position', [-1.3268 1]);
+legend('ÇéÐÎ1', 'ÇéÐÎ2');
+xlabel('Ê±¼ä/s');
+ylabel('v_x¹À¼ÆÎó²î/(km/s)', 'Position', [-1.3268 0.5]);
+ylim([-1 2]);
 print([path, 'vx_error.tif'], '-dtiff', '-r600');
 
 % v_y estimate error
@@ -151,8 +154,8 @@ a.Position = [0.14,0.26,0.78,0.67];
 plot(sim_data1.time, sim_data1.target_vel(2) - sim_data1.x(4,:), 'k:');
 plot(sim_data2.time, sim_data2.target_vel(2) - sim_data2.x(4,:), 'k-');
 % plot([sim_data1.time(1), sim_data1.time(end)], [0 0], 'k--');
-legend('æƒ…å½¢1', 'æƒ…å½¢2');
-xlabel('æ—¶é—´/s');
-ylabel('v_yä¼°è®¡è¯¯å·®/(m/s)', 'Position', [-1.3268 2]);
+legend('ÇéÐÎ1', 'ÇéÐÎ2');
+xlabel('Ê±¼ä/s');
+ylabel('v_y¹À¼ÆÎó²î/(m/s)', 'Position', [-1.3268 2]);
 ylim([-2 6]);
 print([path, 'vy_error.tif'], '-dtiff', '-r600');
